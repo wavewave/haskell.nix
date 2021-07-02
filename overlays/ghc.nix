@@ -3,6 +3,7 @@ final: prev: with prev;
    let
     ghcPkgOverrides = {
         enableIntegerSimple = false;
+        enableShared = true;
       };
     ghcDrvOverrides = drv: {
         hardeningDisable = (drv.hardeningDisable or []) ++ [ "stackprotector" "format" ] ++ lib.optionals prev.stdenv.hostPlatform.isAarch32 [ "pic" "pie" ];
