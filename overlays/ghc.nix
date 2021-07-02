@@ -3,7 +3,9 @@ final: prev: with prev;
    let
     ghcPkgOverrides = {
         enableIntegerSimple = false;
-        enableShared = true;
+        # following https://www.tweag.io/blog/2020-09-30-bazel-static-haskell/
+        enableRelocatedStaticLibs = false;
+        enableShared = false;
       };
     ghcDrvOverrides = drv: {
         hardeningDisable = (drv.hardeningDisable or []) ++ [ "stackprotector" "format" ] ++ lib.optionals prev.stdenv.hostPlatform.isAarch32 [ "pic" "pie" ];
