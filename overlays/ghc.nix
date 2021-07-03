@@ -4,11 +4,16 @@ final: prev: with prev;
     ghcPkgOverrides = {
         enableIntegerSimple = false;
         # following https://www.tweag.io/blog/2020-09-30-bazel-static-haskell/
-        enableRelocatedStaticLibs = false;
+        enableRelocatedStaticLibs = true;
         enableShared = false;
       };
     ghcDrvOverrides = drv: {
         hardeningDisable = (drv.hardeningDisable or []) ++ [ "stackprotector" "format" ] ++ lib.optionals prev.stdenv.hostPlatform.isAarch32 [ "pic" "pie" ];
+        preConfigure = ''
+          ${drv.preConfigure or ""}
+          echo "GhcLibHcOpts += -fPIC -fexternal-dynamic-refs" >> mk/build.mk
+          echo "GhcRtsHcOpts += -fPIC -fexternal-dynamic-refs" >> mk/build.mk
+        '';
       };
    in {
    haskell-nix = let
